@@ -226,11 +226,11 @@
       <button class="upload-button">Upload</button> <!-- Upload button at the top of the sidebar -->
       <ul class="nav">
         <li>
-          <img src="home.png" alt="Home Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;">
+          <img src="/home.png" alt="Home Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;">
           Home
         </li>
         <li class="library">
-          <img src="folder.png" alt="Folder Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;" class="folder-icon">
+          <img src="/folder.png" alt="Folder Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;" class="folder-icon">
           My Library
           <ul class="sublist">
             <li>Publications</li>
@@ -263,11 +263,44 @@
 
     <!-- Main Content -->
 
-      <iframe style="margin-left: 320px;" src="https://app.sigmacomputing.com/embed/1-2VVzf53sCtnhZICdYd4rEP" frameborder="0" width="100%" ></iframe>
-
-
+      <iframe id="sigmaDashboard" style="margin-left: 340px;" src="https://app.sigmacomputing.com/embed/1-2VVzf53sCtnhZICdYd4rEP" frameborder="0" width="100%" ></iframe>
 
   </div>
 
 </body>
+
+  <script>
+
+    function generateEmbed() {
+      let payload = {
+        email: 'tyler+embed@sigmacomputing.com',
+        type: 'pro',
+        team: 'Business%20Intelligence',
+      }
+
+      fetch("/api/foo", {
+        method: 'post',
+        cache:'no-cache',
+        headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+      })
+      .then(data=>{return data.json()})
+      .then(res=>{document.getElementById("sigmaDashboard").src = res.url;
+            document.getElementById("url").innerHTML = res.url;})
+      .catch(e=>console.log(e));
+
+      
+    }
+
+    generateEmbed();
+
+    window.addEventListener('message', function (event) { 
+      if ( event.source === document.getElementById('sigmaDashboard').contentWindow && 
+        event.origin === "https://app.sigmacomputing.com" ) { 
+        console.log(event.data); 
+      };
+    });
+    
+  </script>
+
 </html>
