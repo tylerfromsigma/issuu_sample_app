@@ -7,6 +7,8 @@
 <!-- Add link for tab icon with 32x32 pixels size -->
 <link rel="icon" type="image/svg+xml" href="https://cdn.worldvectorlogo.com/logos/issuu.svg">
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
 <style>
   /* General styling */
   body, html {
@@ -226,11 +228,11 @@
       <button class="upload-button">Upload</button> <!-- Upload button at the top of the sidebar -->
       <ul class="nav">
         <li>
-          <img src="/home.png" alt="Home Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;">
+          <img src="home.png" alt="Home Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;">
           Home
         </li>
         <li class="library">
-          <img src="/folder.png" alt="Folder Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;" class="folder-icon">
+          <img src="folder.png" alt="Folder Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;" class="folder-icon">
           My Library
           <ul class="sublist">
             <li>Publications</li>
@@ -263,44 +265,35 @@
 
     <!-- Main Content -->
 
-      <iframe id="sigmaDashboard" style="margin-left: 340px;" frameborder="0" width="100%" ></iframe>
+    <iframe id="sigmaDashboard" style="margin-left: 340px;" frameborder="0" width="100%" ></iframe>
 
   </div>
 
-</body>
-
   <script>
-
-    function generateEmbed() {
-      let payload = {
-        email: 'tyler+embed@sigmacomputing.com',
-        type: 'pro',
-        team: 'Business%20Intelligence'
-      }
-
-      fetch("/api/foo", {
-        method: 'post',
-        cache:'no-cache',
-        headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(payload)
-      })
-      .then(data=>{return data.json()})
-      .then(res=>{document.getElementById("sigmaDashboard").src = res.url;
-            document.getElementById("url").innerHTML = res.url;})
-      .catch(e=>console.log(e));
-
-      
-    }
-
-    generateEmbed();
-
-    window.addEventListener('message', function (event) { 
-      if ( event.source === document.getElementById('sigmaDashboard').contentWindow && 
-        event.origin === "https://app.sigmacomputing.com" ) { 
-        console.log(event.data); 
-      };
-    });
-    
+    const nonce = CryptoJS.lib.WordArray.random(16);
+  
+    // const EMBED_PATH = 'https://app.sigmacomputing.com/embed/1gfxtc0pKxjd58xClcgVvC/workbook/5PJpzughMUzYDtKo6atnhy/edit'; 
+    const EMBED_PATH = 'https://app.sigmacomputing.com/embed/1-kYaxNjnvbmHZ95bKjfbyl'
+    const EMBED_SECRET = 'd39eb542aa729315126de93bcbd23ac6ea77813b4f72cef6b55120b6bd9f93020aa5f9f0ab7ea798330102063884a76aa46a4dac2838976f32ff282f7b59491d';
+    let searchParams = '?:client_id=b4f6ab9747df74141fcc12f58898e487d2793c81388da9be5c1d577041d658ee';
+    searchParams += '&:nonce=' + nonce.toString();
+    searchParams += '&:email=tyler+embed@sigmacomputing.com';
+    searchParams += '&:external_user_id=tyler+embed@sigmacomputing.com';
+    searchParams += '&:account_type=pro';
+    searchParams += '&:external_user_team=Business%20Intelligence';
+    searchParams += '&:mode=userbacked';
+    searchParams += '&:session_length=3600';
+    searchParams += '&:time=' + Math.floor(new Date().getTime() / 1000);
+  
+    const URL_WITH_SEARCH_PARAMS = EMBED_PATH + searchParams;
+  
+    const SIGNATURE = CryptoJS.HmacSHA256(URL_WITH_SEARCH_PARAMS, EMBED_SECRET).toString();
+  
+    const URL_TO_SEND = `${URL_WITH_SEARCH_PARAMS}&:signature=${SIGNATURE}`;
+  
+    // Call generateEmbed() and set the result as the src attribute of the iframe
+    document.getElementById('sigmaDashboard').src = URL_TO_SEND;
   </script>
 
+</body>
 </html>
