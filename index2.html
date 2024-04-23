@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistics Dashboard</title>
+<style>
+  /* General styling */
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+  }
+
+  /* Top navigation bar styling */
+  .top-nav {
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Adjusted to center the text and button */
+    padding: 10px 20px;
+    padding-right: 20px; /* Adjusted padding-right */
+  }
+
+  /* Logo styling */
+  .logo {
+    height: 32px; /* Reduced height by 20% */
+    margin-right: 20px; /* Spacing from search box */
+  }
+
+  /* Search box styling */
+  .search-box {
+    background-color: #f3f3f3; /* Background color */
+    padding: 10px;
+    border-radius: 8px; /* Rounded corners */
+    border: 1px solid #ddd; /* Lighter border */
+    width: 300px; /* Longer */
+    margin-right: auto; /* Push to the right */
+  }
+
+  /* Profile image styling */
+  .profile-pic {
+    border-radius: 50%;
+    height: 40px;
+    margin-left: -10px; /* Move to the left */
+    margin-right: 20px; /* Add some right margin */
+  }
+
+  /* Upgrade button styling */
+  .upgrade-button {
+    background-color: #000; /* Black background */
+    color: #fff; /* White text */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: block; /* Center the button */
+    margin: 5px auto; /* Center the button and bring closer to text */
+  }
+
+  .upgrade-button:hover {
+    background-color: #333; /* Darker background on hover */
+  }
+
+  /* Plan text styling */
+  .plan-text {
+    text-align: center;
+    margin-top: 10px; /* Add space between the elements */
+  }
+
+  /* Adjustments for the fixed top navigation */
+  .dashboard-container {
+    padding-top: 60px;
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 60px);
+  }
+
+  /* Sidebar styling */
+  .sidebar {
+    width: 300px;
+    background-color: #fff;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 60px); /* Adjust height to fit below top-nav */
+    overflow-y: auto; /* Scroll for overflow content */
+    position: fixed; /* Make sidebar static */
+    left: 0; /* Align with the left edge */
+    top: 60px; /* Leave space for the top-nav */
+  }
+
+  /* Navigation list styling */
+  .nav {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+
+  .nav li {
+    padding: 12px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer; /* Add cursor pointer */
+  }
+
+  .nav li.active {
+    background-color: #b9b8fd;
+  }
+
+  .nav li:hover {
+    background-color: #d0cffd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Sublist styling */
+  .sublist {
+    display: none; /* Hide by default */
+    padding-left: 20px; /* Add indentation */
+  }
+
+  .sublist.show {
+    display: block; /* Show when 'show' class is present */
+  }
+
+  /* Upload button styling */
+  .upload-button {
+    background-color: #5f5de4;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .upload-button:hover {
+    background-color: #6f6fe4;
+  }
+
+  /* Content sections styling */
+  .section {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Responsive design adjustments */
+  @media (max-width: 768px) {
+    .top-nav {
+      padding: 10px 10px;
+    }
+
+    .logo {
+      height: 26px; /* Reduced height by 20% */
+    }
+
+    .profile-pic {
+      height: 30px;
+    }
+
+    .search-box {
+      width: 100%;
+      margin-right: 0;
+    }
+
+    .dashboard-container {
+      flex-direction: column;
+      padding-top: 50px;
+    }
+
+    .sidebar {
+      width: 100%;
+      height: auto;
+      box-shadow: none;
+      position: relative; /* Reset position for small screens */
+      left: auto;
+      top: auto;
+    }
+
+    .content {
+      margin-left: 10px; /* Adjusted margin-left for small screens */
+      padding: 10px;
+      margin-right: 10px; /* Adjusted margin-right for small screens */
+    }
+
+    .upload-button {
+      width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+
+  <div class="top-nav">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Issuu_logo.svg/2560px-Issuu_logo.svg.png" alt="Logo" class="logo">
+    <input type="text" placeholder="Find creators and content" class="search-box"> <!-- Search box -->
+    <!-- Placeholder for other top nav content if needed -->
+    
+    <img src="https://media.licdn.com/dms/image/C4E03AQGJasFEC9kFlA/profile-displayphoto-shrink_200_200/0/1591997482142?e=1719446400&v=beta&t=9YOKqSGbTDiP4ErAJlFj1Br96NPiXEWecLUog3b0u6A" alt="Profile Picture" class="profile-pic">
+  </div>
+
+  <div class="dashboard-container">
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+      <button class="upload-button">Upload</button> <!-- Upload button at the top of the sidebar -->
+      <ul class="nav">
+        <li>
+          <img src="home.png" alt="Home Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;">
+          Home
+        </li>
+        <li class="library">
+          <img src="folder.png" alt="Folder Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;" class="folder-icon">
+          My Library
+          <ul class="sublist">
+            <li>Publications</li>
+            <li>Articles</li>
+            <li>Social Posts</li>
+          </ul>
+        </li>
+        <li class="active">
+          <img src="chart.png" alt="Folder Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;" class="folder-icon">
+          Statistics
+        </li>
+        <li>
+          <img src="dollar.png" alt="Folder Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;" class="folder-icon">
+          Sales
+        </li>
+        <li>
+          <img src="question.png" alt="Folder Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;" class="folder-icon">
+          Help Center
+          <img src="upload.png" alt="Folder Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;" class="folder-icon">
+        </li>
+      </ul>
+      <div class="plan-text">Current plan: <span style="font-weight: bold;">Basic</span></div>
+      <div style="text-align: center;">
+        <button class="upgrade-button">
+          <img src="crown.png" alt="Folder Icon" style="height: 18px; vertical-align: middle; margin-right: 5px;" class="folder-icon">
+          Upgrade
+        </button>
+      </div> <!-- Centered upgrade button -->
+    </div>
+
+    <!-- Main Content -->
+
+      <iframe style="margin-left: 320px;" src="https://app.sigmacomputing.com/embed/1-2VVzf53sCtnhZICdYd4rEP" frameborder="0" width="100%" height="100%"></iframe>
+
+
+
+  </div>
+
+</body>
+</html>
